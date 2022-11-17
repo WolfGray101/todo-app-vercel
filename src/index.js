@@ -70,7 +70,7 @@ class App extends Component {
   onFilterChange = (filter) => {
     this.setState({ filter })
   }
-
+ 
   filter(items, filter) {
     switch (filter) {
       case 'all':

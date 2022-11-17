@@ -20,7 +20,7 @@ export default class Task extends React.Component {
     if (this.state.label) {
       this.props.onEditTaskLabel(this.state.label)
       this.setState({
-        label: '',
+        label: '',  
         vis: false,
       })
     }
@@ -56,6 +56,11 @@ export default class Task extends React.Component {
           <label htmlFor="{label}" aria-label="Task">
             <span className="description" onClick={onToggleDone} onKeyDown={onToggleDone} role="presentation">
               {label}
+            </span>
+            <span>
+              <button type="button" aria-label="play button" className="icon icon-play"/>
+              <button type="button" aria-label="pause button" className="icon icon-pause"/>
+              12:55
             </span>
             <span className="created">{formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })}</span>
           </label>
