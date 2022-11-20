@@ -35,7 +35,9 @@ button {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.submitButton {
+  display: none;
+}
 button::-moz-focus-inner {
   border: none;
 }
@@ -170,7 +172,7 @@ body {
 
 .todo-list li {
   position: relative;
-  font-size: 24px;
+  font-size: 20px;
   border-bottom: 1px solid #ededed;
 }
 
@@ -192,6 +194,9 @@ body {
 
 .todo-list li.editing .view {
   display: none;
+}
+.todo-list li .view {
+	position: relative;
 }
 
 .todo-list li .toggle {
@@ -235,7 +240,7 @@ body {
 }
 
 .todo-list li label .created {
-  font-size: 13px;
+  font-size: 11px;
   color: gray;
 }
 
@@ -254,9 +259,6 @@ body {
 }
 
 .todo-list li .icon {
-  position: absolute;
-  top: 0;
-  bottom: -3px;
   width: 30px;
   height: 40px;
   font-size: 34px;
@@ -265,6 +267,49 @@ body {
   transition: color 0.2s ease-out;
   cursor: pointer;
 }
+.new-todo-form {
+	display: flex;
+	margin-bottom: 0;
+}
+
+
+.new-todo,
+.new-todo-form .new-todo-form__timer,
+.edit {
+	position: relative;
+	margin: 0;
+	width: 100%;
+	font-size: 24px;
+	font-family: inherit;
+	font-weight: inherit;
+	line-height: 1.4em;
+	color: inherit;
+	padding: 6px;
+	border: 1px solid #999;
+	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.new-todo, .new-todo-form .new-todo-form__timer {
+	padding: 16px 16px 16px 60px;
+	border: none;
+	background: rgba(0, 0, 0, 0.003);
+	box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+}
+
+.new-todo {
+	width: 70%;
+}
+
+.new-todo-form .new-todo-form__timer {
+	width: 15%;
+	padding-left: 16px;
+}
+
+
+
 
 
 .todo-list li .icon-pause,
@@ -278,12 +323,22 @@ body {
 	font-size: 15px;
 }
 
+.todo-list li .icon-pause {
+	margin-right: 5px;
+}
 .icon-pause:after {
 	content: '⏸';
 }
 
-.icon-play:after {
+ .icon-play:after {
 	content: '▶';
+}
+.todo-list li .icon-play:hover {
+  color: #af5b5e;
+}
+.todo-list li .icon-pause:hover {
+  width: 20px;
+	height: 20px;  
 }
 
 
@@ -293,6 +348,9 @@ body {
 
 .todo-list li .icon-destroy {
   right: 10px;
+  position: absolute;
+  top: 0;
+  bottom: -3px;
 }
 
 .todo-list li .icon-destroy:after {
@@ -302,8 +360,18 @@ body {
 .todo-list li .icon-edit {
   font-size: 19px;
   right: 45px;
+  position: absolute;
+  top: 0;
+  bottom: -3px;
 }
 
+.todo-list li label .time {
+  font-size:11px;
+  text-align: center;
+  vertical-align: bottom;
+  padding: 0;
+  margin: 0;
+}
 .todo-list li .icon-edit:after {
   content: '✎';
 }

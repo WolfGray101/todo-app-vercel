@@ -16,7 +16,7 @@ function TaskList({ todos, onDeleted, onToggleDone, onEditTaskLabel }) {
         onEditTaskLabel={(text) => onEditTaskLabel(id, text)}
       />
     )
-  })
+  })  
 
   return (
     <div className="main">

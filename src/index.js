@@ -11,8 +11,18 @@ class App extends Component {
   maxID = 100
 
   state = {
-    todoData: [],
-    filter: 'all',
+    todoData: [
+      {
+        label: 'Example task',
+        done:false,
+        min:10,
+        sec:15,
+        id: this.maxID++,
+        date: new Date(),
+        checkedd: false,
+      }
+    ],
+    filter: 'all'
   }
 
   deleteTask = (id) => {
@@ -30,15 +40,24 @@ class App extends Component {
     })
   }
 
-  createTodoItem = (label) => ({
-    label,
-    done: false,
-    id: this.maxID++,
-    date: new Date(),
-  })
+  createTodoItem = (label, min, sec) => {
+    // eslint-disable-next-line no-param-reassign
+    if (!+min) min = 0;
+    // eslint-disable-next-line no-param-reassign
+    if (!+sec) sec = 0;
+    return {
+      label,
+      done: false,
+      id: this.maxID++,
+      date: new Date(),
+      checkedd: false,
+      min,
+      sec 
+    }
+  }
 
-  addTask = (text) => {
-    const newItem = this.createTodoItem(text)
+  addTask = (text, min, sec ) => {
+    const newItem = this.createTodoItem(text, min, sec)
     this.setState(({ todoData }) => {
       const newArray = [...todoData, newItem]
       return {
@@ -51,7 +70,7 @@ class App extends Component {
     this.setState(({ todoData }) => {
       const ind = todoData.findIndex((el) => el.id === id)
       const oldItem = todoData[ind]
-      const newItem = { ...oldItem, done: !oldItem.done }
+      const newItem = { ...oldItem, done: !oldItem.done, checkedd:!oldItem.checkedd }
       const newArray = [...todoData.slice(0, ind), newItem, ...todoData.slice(ind + 1)]
       return { todoData: newArray }
     })

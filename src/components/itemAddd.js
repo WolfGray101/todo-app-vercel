@@ -7,28 +7,46 @@ export default class ItemAdd extends Component {
     this.props = props
     this.state = {
       label: '',
+      min: '',
+      sec: ''
     }
-    this.onLabelChange = this.onLabelChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+    // this.onLabelChange = this.onLabelChange.bind(this)
+    // this.onSubmit = this.onSubmit.bind(this)
   }
 
-  onLabelChange(e) {
+  onLabelChange = (e)  => {
     this.setState({
       label: e.target.value,
     })
   }
 
-  onSubmit(e) {
+  onMinChange = (e) => {
+    this.setState({
+      min: e.target.value,
+    })
+  }
+
+  onSecChange = (e) => {
+    this.setState({
+      sec: e.target.value,
+    })
+  }
+
+  onSubmit = (e) => {
     e.preventDefault()
     if (this.state.label) {
-      this.props.onItemAdd(this.state.label)
-      this.setState({ label: '' })
+      this.props.onItemAdd(this.state.label, this.state.min, this.state.sec,)
+      this.setState({ 
+        label: '',
+        min: '', 
+        sec: ''
+      })
     }
   }
 
   render() {
     return (
-      <form onSubmit={this.onSubmit}>
+      <form className = "new-todo-form" onSubmit={this.onSubmit}>
         <input
           type="Text"
           className="new-todo"
@@ -36,6 +54,15 @@ export default class ItemAdd extends Component {
           onChange={(e) => this.onLabelChange(e)}
           value={this.state.label}
         />
+        <input className="new-todo-form__timer" 
+          value={this.state.min}
+          placeholder="Min" 
+          onChange={(e) => this.onMinChange(e)}/>
+        <input className="new-todo-form__timer" 
+          value={this.state.sec}
+          placeholder="Sec"
+          onChange={(e) => this.onSecChange(e)} />
+        <button className ="submitButton" type='submit'> </button>
       </form>
     )
   }

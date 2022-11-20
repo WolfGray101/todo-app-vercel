@@ -3,9 +3,29 @@ import '../index.css'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 export default class Task extends React.Component {
+  
   state = {
     label: '',
     vis: false,
+    timerValue:0,
+    idTimer:0,
+    min: 0,
+    sec: 0
+  }
+
+  componentDidMount() {
+    const { min, sec } = this.props
+    this.setState({ timerValue: (+min*60 + +sec), 
+      min, 
+      sec})  
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { timerValue } = this.state
+    if (prevState.timerValue !== timerValue && timerValue <= 0) {
+      this.setState({ timerValue: 0 })
+      this.onStopTimer()
+    }
   }
 
   onLabelChange = (e) => {
@@ -21,25 +41,42 @@ export default class Task extends React.Component {
       this.props.onEditTaskLabel(this.state.label)
       this.setState({
         label: '',  
-        vis: false,
+        vis: false     
       })
     }
   }
 
-  editTask = (e) => {
-    e.preventDefault()
+  editTask = () => {
     this.setState((prevState) => ({
       vis: !prevState.vis,
     }))
   }
 
-  render() {
-    const { onDeleted, onToggleDone, label, done, date } = this.props
+  onStartTimer = () => {
+    const teme = setInterval(() => {
+      this.setState(prevState => ({
+        timerValue: prevState.timerValue-1,
+        min: Math.floor((prevState.timerValue-1)/60),
+        sec: (prevState.timerValue-1)%60
+      })
+      )}, 1000)
+    this.setState({ idTimer: teme})
+    console.log(this.state.idTimer, this.state.timerValue);
+  }
 
-    let newClassName = ''
+  onStopTimer = () => {
+    clearInterval(this.state.idTimer)
+   
+  }
+
+  render() {
+    const { onDeleted, onToggleDone, label, done, date, checkedd } = this.props
+
+    
     const isEditing = this.state.vis
-    if (done) newClassName += 'completed'
     const clazz = isEditing ? '' : 'hidden'
+    const newClassName = done? 'completed' : ''    
+    
     return (
       <li className={newClassName}>
         <form className={clazz} onSubmit={this.onSubmit}>
@@ -52,15 +89,15 @@ export default class Task extends React.Component {
           />
         </form>
         <div className="view">
-          <input className="toggle" type="checkbox" id={label} />
+          <input className="toggle" onChange={onToggleDone}  type="checkbox" id={label} checked={checkedd}/>
           <label htmlFor="{label}" aria-label="Task">
             <span className="description" onClick={onToggleDone} onKeyDown={onToggleDone} role="presentation">
               {label}
             </span>
-            <span>
-              <button type="button" aria-label="play button" className="icon icon-play"/>
-              <button type="button" aria-label="pause button" className="icon icon-pause"/>
-              12:55
+            <span className="description time">
+              <button type="button" aria-label="play button" className=" icon-play" onClick={this.onStartTimer}/>
+              <button type="button" aria-label="pause button" className=" icon-pause" onClick={this.onStopTimer}/>
+              <span> {this.state.min}min {this.state.sec}sec </span>
             </span>
             <span className="created">{formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })}</span>
           </label>

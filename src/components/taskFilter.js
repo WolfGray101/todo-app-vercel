@@ -16,7 +16,8 @@ export default class TaskFilter extends Component {
       const clazz = isActive ? 'selected' : ''
       return (
         <li key={name}>
-          <button type="button" className={`${clazz}`} onClick={() => onFilterChange(name)}>
+          <button type="button" className={`${clazz}`}
+            onClick={() => onFilterChange(name)}>
             {label}
           </button>
         </li>
