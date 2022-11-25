@@ -2,7 +2,6 @@
 import React from 'react'
 
 import Task from './task'
-import '../index.css'
 
 function TaskList({ todos, onDeleted, onToggleDone, onEditTaskLabel }) {
   const elements = todos.map((item) => {
@@ -10,6 +9,7 @@ function TaskList({ todos, onDeleted, onToggleDone, onEditTaskLabel }) {
     return (
       <Task
         key={id}
+        id={id}
         {...itemProps}
         onDeleted={() => onDeleted(id)}
         onToggleDone={() => onToggleDone(id)}
