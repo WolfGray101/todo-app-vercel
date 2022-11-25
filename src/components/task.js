@@ -1,110 +1,101 @@
-import React from 'react'
-import '../index.css'
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
+import React, { useState } from 'react';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
-export default class Task extends React.Component {
-  
-  state = {
-    label: '',
-    vis: false,
-    timerValue:0,
-    idTimer:0,
-    min: 0,
-    sec: 0
-  }
+function Task(itemProps) {
+  const { taskLabel, done, date, id, onToggleDone, onDeleted, onEditTaskLabel, min, sec } =
+    itemProps;
+  const [timerValue, setTimerValue] = useState(+min * 60 + +sec);
+  const [isVisible, setVisible] = useState(true);
+  const [editLabel, setLabel] = useState('');
+  const [timerID, setTimerID] = useState(null);
 
-  componentDidMount() {
-    const { min, sec } = this.props
-    this.setState({ timerValue: (+min*60 + +sec), 
-      min, 
-      sec})  
-  }
+  const displayMin = Math.floor(timerValue / 60);
+  const displaySec = timerValue % 60;
+  const completed = done ? 'completed' : '';
 
-  componentDidUpdate(_, prevState) {
-    const { timerValue } = this.state
-    if (prevState.timerValue !== timerValue && timerValue <= 0) {
-      this.setState({ timerValue: 0 })
-      this.onStopTimer()
+  const onLabelChange = (e) => {
+    setLabel(e.target.value);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (editLabel) {
+      onEditTaskLabel(editLabel);
+      setLabel('');
     }
-  }
+    setVisible(true);
+  };
 
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-      vis: true,
-    })
-  }
+  const onStopTimer = () => {
+    clearInterval(timerID);
+  };
 
-  onSubmit = (e) => {
-    e.preventDefault()
-    if (this.state.label) {
-      this.props.onEditTaskLabel(this.state.label)
-      this.setState({
-        label: '',  
-        vis: false     
-      })
-    }
-  }
+  const onStartTimer = (timerId) => {
+    if (timerId) clearInterval(timerID);
+    const timer = setInterval(() => {
+      setTimerValue((s) => (s > 0 ? s - 1 : 0));
+      setTimerID(timer);
+    }, 1000);
+  };
 
-  editTask = () => {
-    this.setState((prevState) => ({
-      vis: !prevState.vis,
-    }))
-  }
+  if (done) onStopTimer();
 
-  onStartTimer = () => {
-    const teme = setInterval(() => {
-      this.setState(prevState => ({
-        timerValue: prevState.timerValue-1,
-        min: Math.floor((prevState.timerValue-1)/60),
-        sec: (prevState.timerValue-1)%60
-      })
-      )}, 1000)
-    this.setState({ idTimer: teme})
-    console.log(this.state.idTimer, this.state.timerValue);
-  }
-
-  onStopTimer = () => {
-    clearInterval(this.state.idTimer)
-   
-  }
-
-  render() {
-    const { onDeleted, onToggleDone, label, done, date, checkedd } = this.props
-
-    
-    const isEditing = this.state.vis
-    const clazz = isEditing ? '' : 'hidden'
-    const newClassName = done? 'completed' : ''    
-    
-    return (
-      <li className={newClassName}>
-        <form className={clazz} onSubmit={this.onSubmit}>
-          <input
-            type="Text"
-            className="new-todo"
-            placeholder="Type to Edit Task"
-            onChange={this.onLabelChange}
-            value={this.state.label}
-          />
-        </form>
-        <div className="view">
-          <input className="toggle" onChange={onToggleDone}  type="checkbox" id={label} checked={checkedd}/>
-          <label htmlFor="{label}" aria-label="Task">
-            <span className="description" onClick={onToggleDone} onKeyDown={onToggleDone} role="presentation">
-              {label}
+  return (
+    <li className={completed}>
+      <form hidden={isVisible} onSubmit={onSubmit}>
+        <input
+          type="Text"
+          className="new-todo"
+          placeholder="Type to Edit Task"
+          onChange={onLabelChange}
+          value={editLabel}
+        />
+      </form>
+      <div className="view">
+        <input className="toggle" onChange={onToggleDone} type="checkbox" id={id} />
+        <label htmlFor={id} aria-label="Task">
+          <span
+            className="description"
+            role="presentation"
+          >
+            {taskLabel}
+          </span>
+          <span className="description time">
+            <button
+              type="button"
+              aria-label="play button"
+              className=" icon-play"
+              onClick={onStartTimer}
+            />
+            <button
+              type="button"
+              aria-label="pause button"
+              className=" icon-pause"
+              onClick={onStopTimer}
+            />
+            <span>
+              {displayMin}min {displaySec}sec
             </span>
-            <span className="description time">
-              <button type="button" aria-label="play button" className=" icon-play" onClick={this.onStartTimer}/>
-              <button type="button" aria-label="pause button" className=" icon-pause" onClick={this.onStopTimer}/>
-              <span> {this.state.min}min {this.state.sec}sec </span>
-            </span>
-            <span className="created">{formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })}</span>
-          </label>
-          <button type="button" aria-label="Edit button" className="icon icon-edit" onClick={this.editTask} />
-          <button type="button" aria-label="Destroy button" className="icon icon-destroy" onClick={onDeleted} />
-        </div>
-      </li>
-    )
-  }
+          </span>
+          <span className="created">
+            {formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })}
+          </span>
+        </label>
+        <button
+          type="button"
+          aria-label="Edit button"
+          className="icon icon-edit"
+          onClick={() => setVisible(!isVisible)}
+        />
+        <button
+          type="button"
+          aria-label="Destroy button"
+          className="icon icon-destroy"
+          onClick={onDeleted}
+        />
+      </div>
+    </li>
+  );
 }
+
+export default Task;
